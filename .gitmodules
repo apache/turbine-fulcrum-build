@@ -1,0 +1,60 @@
+[submodule "turbine-fulcrum-cache"]
+	path = turbine-fulcrum-cache
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-cache.git
+	branch = master
+[submodule "cache"]
+	path = cache
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-cache.git
+	branch = master
+[submodule "factory"]
+	path = factory
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-factory.git
+	branch = master
+[submodule "json"]
+	path = json
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-json.git
+	branch = master
+[submodule "localization"]
+	path = localization
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-localization.git
+	branch = master
+[submodule "parser"]
+	path = parser
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-parser.git
+	branch = master
+[submodule "pool"]
+	path = pool
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-pool.git
+	branch = master
+[submodule "quartz"]
+	path = quartz
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-quartz.git
+	branch = master
+[submodule "security"]
+	path = security
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-security.git
+	branch = master
+[submodule "site"]
+	path = site
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-site.git
+	branch = master
+[submodule "testcontainer"]
+	path = testcontainer
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-testcontainer.git
+	branch = master
+[submodule "yaafi"]
+	path = yaafi
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-yaafi.git
+	branch = master
+[submodule "yaafi-crypto"]
+	path = yaafi-crypto
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-yaafi-crypto.git
+	branch = master
+[submodule "crypto"]
+	path = crypto
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-crypto.git
+	branch = master
+[submodule "intake"]
+	path = intake
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-intake.git
+	branch = master

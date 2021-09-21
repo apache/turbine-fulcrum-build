@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>turbine-parent</artifactId>
+       <groupId>org.apache.turbine</groupId>
+       <version>9-SNAPSHOT</version>
+  </parent>
+  <artifactId>fulcrum</artifactId>
+  <packaging>pom</packaging>
+  <version>1</version>
+  <name>Fulcrum Master Build</name>
+  <url>http://turbine.apache.org/fulcrum</url>
+  <inceptionYear>2001</inceptionYear>
+
+  <modules>  
+
+    <!-- turbine / torque dependencies -->
+    
+    <module>cache</module> 
+    <module>crypto</module>    
+    <module>factory</module>    
+    <module>intake</module>    
+    <module>json</module>   
+    <module>localization</module>          
+    <module>parser</module>    
+    <module>pool</module>    
+    <module>quartz</module>        
+    <module>security</module>    
+    <module>testcontainer</module>    
+    <!--TODO add as git 
+     module>upload</module--> 
+    <module>yaafi-crypto</module>        
+    <module>yaafi</module>        
+
+    <!-- Potentially dormant modules -->
+    <!--module>commonsemail</module>
+    <module>configuration/impl</module>    
+    <module>hsqldb</module>    
+    <module>mimetype</module>  
+    <module>pbe</module>    
+    <module>resourcemanager</module>    
+    <module>groovy</module>    
+    <module>script</module>    
+    <module>servicemanager</module>    
+    <module>spring</module>            
+    <module>xmlrpc</module>        
+    <module>xslt</module-->
+
+    <!-- needs upgrade to eclipse jetty -->    
+    <!--module>jetty</module-->
+
+  </modules>
+  
+  <build>
+     <pluginManagement>
+        <plugins>
+          <!-- run optionally
+                mvn org.owasp:dependency-check-maven:aggregate 
+                do not use it as reporting plugin, as it exposes file paths to artifacts 
+                check each possible vulnerability carefully, find more info about how to read, false positives et al. here: https://jeremylong.github.io/DependencyCheck/dependency-check-maven/plugin-info.html
+           -->
+            <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <!--configuration> 
+                 <suppressionFiles>true</suppressionFiles>
+              </configuration--> 
+            </plugin>
+          </plugins>
+     </pluginManagement>
+   </build>
+
+</project>
+
