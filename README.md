@@ -54,6 +54,19 @@ Fulcrum Components requires Java 8. Older components might require Java 7 only.
     -----------------------------------------------------------------------
 ## COMPONENT DEVELOPMENT  
 --------------------------------------------------------------------------
+
+### Adding Fulcrum component
+
+    git submodule add https://gitbox.apache.org/repos/asf/turbine-fulcrum-upload.git upload
+    
+This will immediately clone the repo into folder upload.
+    
+Edit in pom and add module
+
+     <module>upload</module> 
+
+Test it, by running mvn install 
+
 ### Publishing Workflow
 
 #### Prerequisites
@@ -213,17 +226,19 @@ If no sha1 files are in the target folder, check local repo.
 
 Git Checkout <tagged release version> source. Generate and Publish Site
 
-### Description of the process
+### Description of the process (GIT)
 
-- Generate the site (mvn site, single module, mvn site site:stage multi module)
+- Generate the site (mvn site, single module, mvn site site:stage multi module) in master and optionally save it somewhere
 
-- checkout branch asf-site (verify proper settings in .asf.yaml)
+- Git checkout branch asf-site (verify .asf.yaml has similar key/value asc
 
-- copy content of target/site (single module), target/staging (multi module) to the root of the branch
+    whoami: asf-site
 
-- commit and push (this trigers the site update, if not contact INFRA)
+- Copy generated content to the root of the branch
 
-### Maven (not used for Git)
+- Commit and push (this triggers the site update, if not contact INFRA)
+
+### Maven (may or may not be used with Git)
 
 IMPORTANT: You may have to clean up the checkoutDirectory of maven-scm-publish-plugin plugin after doing a dry run!
 This directory is configured in turbine-parent bydefault outside target folder:

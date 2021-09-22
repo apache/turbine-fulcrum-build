@@ -58,3 +58,6 @@
 	path = intake
 	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-intake.git
 	branch = master
+[submodule "upload"]
+	path = upload
+	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-upload.git

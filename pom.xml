@@ -46,8 +46,7 @@
     <module>quartz</module>        
     <module>security</module>    
     <module>testcontainer</module>    
-    <!--TODO add as git 
-     module>upload</module--> 
+    <module>upload</module> 
     <module>yaafi-crypto</module>        
     <module>yaafi</module>        
 
