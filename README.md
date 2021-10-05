@@ -1,5 +1,4 @@
 # [Apache F U L C R U M](https://turbine.apache.org/fulcrum/)
---------------------------------------------------------------------------
 
 Fulcrum is a collection of components originally part of the Turbine core
 project that are suitable for use in any environment.  They are designed to
@@ -14,10 +13,10 @@ most components work best in an environment which uses the Fulcrum Yaafi service
 You can find a web framework, which is powered by Fulcrum here: [Apache Turbine](https://turbine.apache.org/).
 
 ## B U I L D I N G
---------------------------------------------------------------------------
+
 You must have Maven 3.x
 
-Building the Fulcrum from SVN is very easy.  Fulcrum has been
+Building the Fulcrum from GIT is very easy.  Fulcrum has been
 Maven-enabled.  Please refer to the Maven Getting Started document for
 instructions on building.  This document is available here:
 
@@ -25,7 +24,7 @@ https://maven.apache.org/guides/getting-started/
 
 
 ### GIT 
--------------------------------------------
+
 
 You could use git to checkout current trunk:
 
@@ -42,18 +41,18 @@ To merge and fast-forward
 
     
 ## Documentation
---------------------------------------------------------------------------
+
 
 Each component has its section [here](https://turbine.apache.org/fulcrum/).
 
 ## Requirements
---------------------------------------------------------------------------
+
 
 Fulcrum Components requires Java 8. Older components might require Java 7 only.
     
-    -----------------------------------------------------------------------
+  
 ## COMPONENT DEVELOPMENT  
---------------------------------------------------------------------------
+
 ### Publishing Workflow
 
 #### Prerequisites
@@ -69,14 +68,14 @@ More Information:
   
 ##### Steps
 
+
 1. Local Testing
 
-    Verify gpg.homedir, gpg.useagent, gpg.passphrase. Check, if -Dgpg.useagent=false is needed,  see below comment to pinentry.
-    You may need to add additional profiles, e.g. -Papache-release,java8 or add -Dgpg.passphrase=<xx> 
-  
-```sh  
-mvn clean site install -Papache-release 
-```
+Verify gpg.homedir, gpg.useagent, gpg.passphrase. Check, if -Dgpg.useagent=false is needed,  see below comment to pinentry.
+You may need to add additional profiles, e.g. -Papache-release,java8 or add -Dgpg.passphrase=<xx> 
+
+    
+    mvn clean site install -Papache-release 
   
 **Multi Module**
  
@@ -99,21 +98,24 @@ And finally:
 
 2. Remote Testing
 
-- May require explicit authentication with -Dusername=<username> -Dpassword=<pw>
+As we using git as svn, be sure that you execute the steps in master/trunk/main branch as git commands are applied to the current branch.
+
+Find more Information in [Turbine Release Manual](https://cwiki.apache.org/confluence/display/TURBINE/Publishing+a+Release).
+
+If you have not set ssh-key or gpg authentication,  the tasks may require that you explicitely authenticate with -Dusername=<username> -Dpassword=<pw>. 
 
 **Multi Module**
 
-    mvn release:prepare -DautoVersionSubmodules=true -P apache-release
+    mvn release:prepare -DautoVersionSubmodules=true -Papache-release -Dtag=<project.artifact>-<version>-candidate
+    
 
  
 Important: Success will be on the master build, the others are skipped.
 
 **Single**
 
-    mvn release:prepare -Papache-release
+    mvn release:prepare -Papache-release -Dtag=<project.artifact>-<version>-candidate
 
-Helpful hint from Apache Website: If you're located in Europe then release:prepare may fail with 'Unable to tag SCM' and ' svn: No such revision X '. 
-    Wait 10 seconds and run mvn release:prepare again.
   
 3. Release Preparing
 
@@ -123,7 +125,7 @@ that your mvn security settings are in place ~/.m2/settings.xml and ~/.m2/settin
 For more information on setting up security see the encryption guide:
  - [GUIDE ENCRYPTION](http://maven.apache.org/guides/mini/guide-encryption.html).
 
-This performs an upload to repository.apache.org/service/local/staging/deploy/maven2/
+This performs an upload to https://repository.apache.org/#stagingRepositories
 
 Hint: Add -Dgpg.useagent=false helps, if running from a windows machine to avoid hanging while gpg plugin signing process 
  .. this may happen, if you do not define the pinentry-program in gpg-agent.conf correctly ..
@@ -142,8 +144,11 @@ Login and close in Nexus Repo:
  
  Fetch the URL for the tagged Repo from target/checkout with
   
-    svn info
-    git remote -v
+    git pull --prune --tags
+    git tag -l 
+    git checkout <tag>
+    
+You will be in detached mode.    
 
   
 5. Prepare Voting Information and Voting
@@ -165,13 +170,24 @@ Login and close in Nexus Repo:
 
     mvn release:rollback
 
-which will delete the tag in git branch/svn repo tag (since version 3.0.0.-M1, it does a svn delete ..) and revert to the pre-release state.
-Otherwise revert the commits in your checked out workspace and delete the tag manually.
+which will delete the tag in git repo tag and revert to the pre-release state.
+
+Otherwise reset the commit in master in your checked out trunk/master/main branch 
+
+    git reflog
+    // find commit previous to release
+    git reset –hard <shacommit>
+    git commit "Reset to state previous RC due to <Message-ID>"
+    git push -f origin master
+
+and update master repo and delete the tag manually.
+
+    git push origin :refs/tags/<project.artifact>-<version>-candidate
 
 - Drop staged repository in nexus and start again with step 1.
 
 
-- Don't forget to refer to the failed vote Message-ID in the commit messages (svn, nexus).
+- Don't forget to refer to the failed vote Message-ID in the commit messages (git, nexus).
 
  
 7. Distribution 
@@ -193,11 +209,11 @@ Checkout the tagged released release and run:
     mvn clean install package -Papache-release 
 
  
-Generate checksums with UNIX tool shasum, Windows certutil or other tools and 
+Generate checksums with UNIX tool shasum (2022 at least sha512), Windows certutil or other tools and 
 copy artifacts and sha-files to dist source/binaries folder.
 
 If not all jars are included (assembly plugin _SHOULD_ run after jar generation), run a second time without clean.
-If no sha1 files are in the target folder, check local repo.
+If no sha512 files are in the target folder, check local repo.
       
 - SVN Add <binaries>, <sources> artifacts (jar/zip/tar.gz,asc,sha512 files) to target repo.
 - SVN Remove old releases binaries and sources 
@@ -213,24 +229,27 @@ If no sha1 files are in the target folder, check local repo.
 
 Git Checkout <tagged release version> source. Generate and Publish Site
 
-### Description of the process
+### Description of the process using asf-site branch using GIT commands
+
+Hint: If checking out the branch asf-site you find an .asf.yaml file, where the exact configuration is found, what happens after site generation.
+
+Find more information [here](https://cwiki.apache.org/confluence/display/INFRA/git+-+.asf.yaml+features).
 
 - Generate the site (mvn site, single module, mvn site site:stage multi module)
 
-- checkout branch asf-site (verify proper settings in .asf.yaml)
+- Save target/site into another folder (target may be ignored, but to be sure)
 
-- copy content of target/site (single module), target/staging (multi module) to the root of the branch
+- checkout branch asf-site. Verify proper settings in .asf.yaml providing at least this line:
 
-- commit and push (this trigers the site update, if not contact INFRA)
+    whoami: asf-site
 
-### Maven (not used for Git)
+- copy content of saved copy or target/site (single module), target/staging (multi module) to *the root of the branch*
 
-IMPORTANT: You may have to clean up the checkoutDirectory of maven-scm-publish-plugin plugin after doing a dry run!
-This directory is configured in turbine-parent bydefault outside target folder:
+- commit and push (this triggers the site update, if not contact INFRA)
 
-    turbine.site.cache: ${user.home}/turbine-sites
-    
-But check pom.xml configuration of properties.
+### ~~Maven Publishing~~
+
+The second steps are not yet tested with git repos (2021). Use instead the workflow above (using GIT commands). 
 
 **Multi Module**
 
@@ -244,12 +263,19 @@ Omit site:stage, which reqires site element definition in distributionManagement
     mvn site scm-publish:publish-scm -Dscmpublish.dryRun=true
     mvn clean site scm-publish:publish-scm -Dusername=<username> -Dpassword=<pw>
 
+### Deployment 
    
-To deploy the site execute:
+To deploy the site execute
 
     mvn site-deploy
 
+IMPORTANT: You may have to clean up the checkoutDirectory of maven-scm-publish-plugin plugin after doing a dry run!
+This directory is configured in turbine-parent by default outside target folder:
+
+    turbine.site.cache: ${user.home}/turbine-sites
+    
+Check pom.xml configuration of properties.
 
 ## License
 
-Apache Fulcrum is distributed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+Apache Fulcrum Components are distributed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
