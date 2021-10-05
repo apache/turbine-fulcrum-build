@@ -22,14 +22,11 @@ instructions on building.  This document is available here:
 
 https://maven.apache.org/guides/getting-started/
 
-
 ### GIT 
-
 
 You could use git to checkout current trunk:
 
      git clone --recurse-submodules https://github.com/apache/turbine-fulcrum-build.git 
-     
      
 To update submodules: 
 
@@ -38,20 +35,28 @@ To update submodules:
 To merge and fast-forward 
 
     git submodule update --remote --merge
-
     
 ## Documentation
-
 
 Each component has its section [here](https://turbine.apache.org/fulcrum/).
 
 ## Requirements
 
-
 Fulcrum Components requires Java 8. Older components might require Java 7 only.
-    
   
 ## COMPONENT DEVELOPMENT  
+
+### Adding Fulcrum component
+
+    git submodule add https://gitbox.apache.org/repos/asf/turbine-fulcrum-upload.git upload
+    
+This will immediately clone the repo into folder upload.
+    
+Edit in pom and add module
+
+     <module>upload</module> 
+
+Test it, by running mvn install 
 
 ### Publishing Workflow
 
@@ -108,7 +113,6 @@ If you have not set ssh-key or gpg authentication,  the tasks may require that y
 
     mvn release:prepare -DautoVersionSubmodules=true -Papache-release -Dtag=<project.artifact>-<version>-candidate
     
-
  
 Important: Success will be on the master build, the others are skipped.
 
@@ -149,7 +153,6 @@ Login and close in Nexus Repo:
     git checkout <tag>
     
 You will be in detached mode.    
-
   
 5. Prepare Voting Information and Voting
  
@@ -227,7 +230,7 @@ If no sha512 files are in the target folder, check local repo.
 
 - [DEPLOY DOCU](http://maven.apache.org/developers/website/deploy-component-reference-documentation.html)
 
-Git Checkout <tagged release version> source. Generate and Publish Site
+## Git Checkout <tagged release version> source. Generate and Publish Site
 
 ### Description of the process using asf-site branch using GIT commands
 
@@ -235,7 +238,8 @@ Hint: If checking out the branch asf-site you find an .asf.yaml file, where the 
 
 Find more information [here](https://cwiki.apache.org/confluence/display/INFRA/git+-+.asf.yaml+features).
 
-- Generate the site (mvn site, single module, mvn site site:stage multi module)
+
+- Generate the site (mvn site, single module, mvn site site:stage multi module) in master and optionally save it somewhere
 
 - Save target/site into another folder (target may be ignored, but to be sure)
 
@@ -243,9 +247,9 @@ Find more information [here](https://cwiki.apache.org/confluence/display/INFRA/g
 
     whoami: asf-site
 
-- copy content of saved copy or target/site (single module), target/staging (multi module) to *the root of the branch*
+- Copy content of saved copy or target/site (single module), target/staging (multi module) to *the root of the branch*
 
-- commit and push (this triggers the site update, if not contact INFRA)
+- Commit and push (this triggers the site update, if not contact INFRA)
 
 ### ~~Maven Publishing~~
 
