@@ -28,13 +28,25 @@ You could use git to checkout current trunk:
 
      git clone --recurse-submodules https://github.com/apache/turbine-fulcrum-build.git 
      
-To update submodules: 
+If you did a normal clone you have to init the submodules from the root folder with
+
+    git submodule update --init --recursive
+    
+This will register and clone all submodules in one step.
+     
+To update all submodules: 
 
      git pull --recurse-submodules 
-     
-To merge and fast-forward 
 
-    git submodule update --remote --merge
+or equivalently:
+
+    git submodule update --init --remote 
+     
+To init or merge and fast-forward a single module:
+
+    git submodule update --init --remote <module>
+    
+    git submodule update --remote --merge <module>
     
 ## Documentation
 
@@ -67,9 +79,8 @@ Deploy jars
     mvn deploy -Papache-release
 
 More Information:
-  - https://www.apache.org/dev/publishing-maven-artifacts.html#prepare-poms
-  - http://maven.apache.org/developers/website/deploy-component-reference-documentation.html
-  - https://infra.apache.org/publishing-maven-artifacts.html
+  - [Maven Component Reference](http://maven.apache.org/developers/website/deploy-component-reference-documentation.html)
+  - [Apache Release Publishing](https://infra.apache.org/publishing-maven-artifacts.html)
   
 ##### Steps
 
@@ -86,9 +97,9 @@ You may need to add additional profiles, e.g. -Papache-release,java8 or add -Dgp
  
     mvn release:prepare -DdryRun=true -DautoVersionSubmodules=true -Papache-release
     
-Optional security check after mvn clean install:
+Security check is active by default (-Ddependency.check.skip=false ):
 
-    mvn org.owasp:dependency-check-maven:aggregate -Ddependency.check.skip=false -DskipTests=true.
+    mvn org.owasp:dependency-check-maven:aggregate -DskipTests=true.
 
 **Single**
 
@@ -103,7 +114,11 @@ And finally:
 
 2. Remote Testing
 
-As we using git as svn, be sure that you execute the steps in master/trunk/main branch as git commands are applied to the current branch.
+As we using GIT as SCM (source control management), *be sure that you execute the steps in master/trunk/main branch* as git commands are applied to the current branch.
+
+    git status
+    
+This should show "On branch master" in the first line.
 
 Find more Information in [Turbine Release Manual](https://cwiki.apache.org/confluence/display/TURBINE/Publishing+a+Release).
 
@@ -180,7 +195,7 @@ Otherwise reset the commit in master in your checked out trunk/master/main branc
     git reflog
     // find commit previous to release
     git reset –hard <shacommit>
-    git commit "Reset to state previous RC due to <Message-ID>"
+    git commit "Reset RC to state previous RC due to <Message-ID>"
     git push -f origin master
 
 and update master repo and delete the tag manually.
@@ -253,7 +268,7 @@ Find more information [here](https://cwiki.apache.org/confluence/display/INFRA/g
 
 ### ~~Maven Publishing~~
 
-The second steps are not yet tested with git repos (2021). Use instead the workflow above (using GIT commands). 
+The second steps are not yet tested with GIT repos (2021). Use instead the workflow above (using GIT commands). 
 
 **Multi Module**
 
