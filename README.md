@@ -34,6 +34,8 @@ If you did a normal clone you have to init the submodules from the root folder w
     
 This will register and clone all submodules in one step.
      
+Hint: To limit history e.g. to 10 commits add --depth 10.
+     
 To update all submodules: 
 
      git pull --recurse-submodules 
@@ -69,6 +71,14 @@ Edit in pom and add module
      <module>upload</module> 
 
 Test it, by running mvn install 
+
+### Contributing
+
+Please feel free to contribute. We are always happy to encourage new committers to the project. 
+
+The Apache Software foundation requires that any contributor has signed the ICLA (Individual Contributor License Agreement).
+
+Find an overview, more information and how-tos [here](http://www.apache.org/licenses/contributor-agreements.html#clas).
 
 ### Publishing Workflow
 
@@ -106,7 +116,9 @@ Security check is active by default (-Ddependency.check.skip=false ):
 If dependency check is skipped by default, do mvn org.owasp:dependency-check-maven:check -Ddependency.check.skip=false
 Since Turbine Parent 8 security check is enabled by default.
 
-    mvn release:prepare -DdryRun=true -Papache-release 
+    mvn release:prepare -DdryRun=true -Papache-release -Dtag=<project.artifact>-<version>-candidate
+    
+Here the tag is already set.
 
 And finally:
 
@@ -114,11 +126,8 @@ And finally:
 
 2. Remote Testing
 
-As we using GIT as SCM (source control management), *be sure that you execute the steps in master/trunk/main branch* as git commands are applied to the current branch.
 
-    git status
-    
-This should show "On branch master" in the first line.
+As we using GIT as SCM, be sure that you execute the steps in the *master|trunk|main* branch as GIT commands are applied to the current branch.
 
 Find more Information in [Turbine Release Manual](https://cwiki.apache.org/confluence/display/TURBINE/Publishing+a+Release).
 
@@ -180,7 +189,13 @@ You will be in detached mode.
   
 6a Promote / Release
 
-- Release staged repository in nexus and proceed with next step.
+- Release staged repository in nexus
+
+- Rename (replace) the GIT tag <xyz>-candidate to <xyz>. 
+Find more Information in [Turbine Release Manual](https://cwiki.apache.org/confluence/display/TURBINE/Publishing+a+Release).
+
+- Proceed with next step.
+
   
 6b Revert
 
@@ -253,10 +268,17 @@ Hint: If checking out the branch asf-site you find an .asf.yaml file, where the 
 
 Find more information [here](https://cwiki.apache.org/confluence/display/INFRA/git+-+.asf.yaml+features).
 
+- Generate the site in master branch and optionally save it somewhere
 
-- Generate the site (mvn site, single module, mvn site site:stage multi module) in master and optionally save it somewhere
+**Single Module**
 
-- Save target/site into another folder (target may be ignored, but to be sure)
+    mvn site
+
+**Multi Module**
+
+    mvn site site:stage
+
+- Save target/site or target/staging into another folder (target may be ignored, but to be sure)
 
 - checkout branch asf-site. Verify proper settings in .asf.yaml providing at least this line:
 
