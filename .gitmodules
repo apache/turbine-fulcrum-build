@@ -1,7 +1,3 @@
-[submodule "turbine-fulcrum-cache"]
-	path = turbine-fulcrum-cache
-	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-cache.git
-	branch = master
 [submodule "cache"]
 	path = cache
 	url = https://gitbox.apache.org/repos/asf/turbine-fulcrum-cache.git
