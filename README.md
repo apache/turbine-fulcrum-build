@@ -39,10 +39,15 @@ Hint: To limit history e.g. to 10 commits add --depth 10.
 To update all submodules: 
 
      git pull --recurse-submodules 
-
+     
 or equivalently:
 
     git submodule update --init --remote 
+    
+    git submodule sync
+    
+or:
+    git submodule foreach git pull
      
 To init or merge and fast-forward a single module:
 
