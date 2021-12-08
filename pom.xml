@@ -69,6 +69,13 @@
 
   </modules>
   
+    <scm>
+        <connection>scm:git:https://gitbox.apache.org/repos/asf/turbine-fulcrum-build.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/turbine-fulcrum-build.git</developerConnection>    
+        <url>https://github.com/apache/turbine-fulcrum-build/tree/${project.scm.tag}</url>
+        <tag>master</tag>
+    </scm>
+  
   <build>
      <pluginManagement>
         <plugins>

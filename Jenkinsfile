@@ -45,7 +45,9 @@ pipeline
     {
         agent
             {
-                label AGENT_LABEL
+                node {
+                    label AGENT_LABEL 
+                }
             }
         parameters
             {
@@ -55,6 +57,7 @@ pipeline
                 choice(name: 'FULCRUM_COMPONENT', choices: ['','cache', 'crypto', 'factory', 'intake', 'json', 'localization', 'parser', 'pool', 'quartz', 'security', 'site', 'testcontainer', 'upload', 'yaafi', 'yaafi-crypto'], description: 'Select fulcrum component')
                 // default master
                 choice(name: 'SUB_MODULE_HEAD', choices: ['master', 'main','trunk'], description: 'The master/main/trunk branch of the Fulcrum component')
+                booleanParam(name: 'TEST_MODE', defaultValue: true, description: 'Run as Test Build or Deploy site for Component ')
             }
         tools
             {
@@ -77,15 +80,6 @@ pipeline
                 MAVEN_CLI_OPTS = "-B -V -U -e -fae -ntp -Dsurefire.useFile=false"
                 MAVEN_GOALS = "${params.MULTI_MODULE == 'site' ? 'clean site' : 'clean site site:stage'}"
             }
-        if ( $FULCRUM_COMPONENT == '')
-        {
-            echo "No FULCRUM_COMPONENT provided: $FULCRUM_COMPONENT"
-            // no mail
-            currentBuild.result = 'SUCCESS'
-            return
-        } else {
-            echo "Building site for FULCRUM_COMPONENT: $FULCRUM_COMPONENT"
-        }
         stages
             {
             stage('Prepare')
@@ -103,9 +97,11 @@ pipeline
                                             sh "git branch"
                                             echo "$FULCRUM_COMPONENT: Checking out ${params.SUB_MODULE_HEAD}"
                                             sh "git checkout ${params.SUB_MODULE_HEAD}"
-                                            env.CURRENT_BRANCH = sh(script: 'git branch --show-current', returnStdout: true).trim()
+                                            env.CURRENT_BRANCH = sh(script: "git status --branch --porcelain | grep '##' | cut -c 4-", returnStdout: true).trim()
+                                            echo "CURRENT_BRANCH: ${env.CURRENT_BRANCH}"
                                             // Capture last commit hash for final commit message
                                             env.LAST_SHA = sh(script: 'git log -n 1 --pretty=format:%H', returnStdout: true).trim()
+                                            echo "LAST_SHA: ${env.LAST_SHA}"
                                         }
                                 }
                         }
@@ -149,12 +145,20 @@ pipeline
                 {
                     when
                         {
-                        anyOf
+                        allOf {
+                            not {
+                                expression 
+                                    { 
+                                        params.TEST_MODE 
+                                    }
+                            }
+                           anyOf
                             {
                                 expression
                                     {
-                                        env.CURRENT_BRANCH ==~ /master|trunk|main/
+                                        env.CURRENT_BRANCH ==~ /(?i)^(master|trunk|main).*?/
                                     }
+                            }
                         }
                     }
                     steps
