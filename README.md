@@ -53,7 +53,24 @@ To init or merge and fast-forward a single module:
 
     git submodule update --init --remote <module>
     
+or later
+    
     git submodule update --remote --merge <module>
+    
+or change into submodule
+
+    cd <submodule>
+    git checkout master
+    git pull
+    
+After having done this, check with
+
+    git status
+    
+and add the changed submodules (untracked contents, new commits" :
+
+    git add <submodule>
+    git commit "updated submodule <>"
     
 ## Documentation
 

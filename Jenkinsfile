@@ -20,21 +20,23 @@
 // https://ci-builds.apache.org/pipeline-syntax/globals
 // https://www.jenkins.io/doc/pipeline/steps/workflow-basic-steps/
 // https://www.jenkins.io/doc/pipeline/examples/#maven-and-jdk-specific-version
-
 // https://cwiki.apache.org/confluence/display/INFRA/Jenkins+node+labels
-
+// https://cwiki.apache.org/confluence/display/INFRA/ASF+Cloudbees+Operations+Center
+ 
 // started with jena-site and gora
 
 // git-websites:
 // "Nodes that are reserved for ANY project that wants to build their website docs and
 // publish directly live (requires asf-site and pypubsub"
-// alternatively take agent 'ubuntu'
+// no git-websites label her using ubuntu
+
+// Jenkins build server used: https://builds.apache.org/ / ci-builds.apache.org
 
 // Fulcurm-Build has submodules, which are expcetd for this Jenkinsfile NOT to be fetched if cloning!
 // This is the default (do NOT provide git clone --recurse-submodules flag) and this is because
 // only the current submodule is initialized downstrema with git submodule update --init
 
-def AGENT_LABEL = env.AGENT_LABEL ?: 'git-websites'
+def AGENT_LABEL = env.AGENT_LABEL ?: 'ubuntu'
 
 def JDK_NAME = env.JDK_NAME ?: 'jdk_1.8_latest'
 def MVN_NAME = env.MVN_NAME ?: 'maven_3_latest'
@@ -63,6 +65,7 @@ pipeline
             {
                 DEPLOY_BRANCH = 'asf-site'
                 STAGING_DIR = "target/${params.MULTI_MODULE}/"
+                FULCRUM_COMPONENT = "${params.FULCRUM_COMPONENT}"
                 // LANG = 'C.UTF-8'
                 // -B, --batch-mode Run in non-interactive (batch) mode
                 // -e, --error Produce execution error messages
@@ -98,8 +101,8 @@ pipeline
                                         {
                                             sh "pwd"
                                             sh "git branch"
-                                            echo "$FULCRUM_COMPONENT: Checking out $SUB_MODULE_HEAD"
-                                            sh "git checkout $SUB_MODULE_HEAD"
+                                            echo "$FULCRUM_COMPONENT: Checking out ${params.SUB_MODULE_HEAD}"
+                                            sh "git checkout ${params.SUB_MODULE_HEAD}"
                                             env.CURRENT_BRANCH = sh(script: 'git branch --show-current', returnStdout: true).trim()
                                             // Capture last commit hash for final commit message
                                             env.LAST_SHA = sh(script: 'git log -n 1 --pretty=format:%H', returnStdout: true).trim()
