@@ -68,7 +68,6 @@ pipeline
             {
                 DEPLOY_BRANCH = 'asf-site'
                 STAGING_DIR = "target/${params.MULTI_MODULE}/"
-                FULCRUM_COMPONENT = "${params.FULCRUM_COMPONENT}"
                 // LANG = 'C.UTF-8'
                 // -B, --batch-mode Run in non-interactive (batch) mode
                 // -e, --error Produce execution error messages
@@ -87,15 +86,15 @@ pipeline
                     steps
                         {
                             // not --update as clone ise done without --recurse-submodules
-                            sh "git submodule update --init $FULCRUM_COMPONENT"
+                            sh "git submodule update --init ${params.FULCRUM_COMPONENT}"
                             // branch will be detached head, need to checkout explicitely
-                            dir("$FULCRUM_COMPONENT")
+                            dir("${params.FULCRUM_COMPONENT}")
                                 {
                                     script
                                         {
                                             sh "pwd"
                                             sh "git branch"
-                                            echo "$FULCRUM_COMPONENT: Checking out ${params.SUB_MODULE_HEAD}"
+                                            echo "${params.FULCRUM_COMPONENT}: Checking out ${params.SUB_MODULE_HEAD}"
                                             sh "git checkout ${params.SUB_MODULE_HEAD}"
                                             env.CURRENT_BRANCH = sh(script: "git status --branch --porcelain | grep '##' | cut -c 4-", returnStdout: true).trim()
                                             echo "CURRENT_BRANCH: ${env.CURRENT_BRANCH}"
@@ -114,7 +113,7 @@ pipeline
                     }
                     steps
                         {
-                            dir("$FULCRUM_COMPONENT")
+                            dir("${params.FULCRUM_COMPONENT}")
                                 {
                                     sh "pwd"
                                     // builds into target/site folder, this folder is expected to be preserved as it is used in next step
@@ -133,7 +132,7 @@ pipeline
                         }
                     steps
                         {
-                            dir("$FULCRUM_COMPONENT")
+                            dir("${params.FULCRUM_COMPONENT}")
                                 {
                                     sh "pwd"
                                     // builds into target/staging folder, this folder is expected to be preserved as it is used in next step
@@ -163,7 +162,7 @@ pipeline
                     }
                     steps
                         {
-                            dir("$FULCRUM_COMPONENT")
+                            dir("${params.FULCRUM_COMPONENT}")
                                 {
                                     script
                                         {
@@ -176,9 +175,9 @@ pipeline
                                             def exists = fileExists '.gitignore'
                                             if (exists)
                                             {
-                                                echo "Fulcrum component $FULCRUM_COMPONENT: .gitignore exists in branch ${DEPLOY_BRANCH}."
+                                                echo "Fulcrum component ${params.FULCRUM_COMPONENT}: .gitignore exists in branch ${DEPLOY_BRANCH}."
                                             } else {
-                                                echo "Fulcrum component $FULCRUM_COMPONENT: creating default .gitignore in branch ${DEPLOY_BRANCH}."
+                                                echo "Fulcrum component ${params.FULCRUM_COMPONENT}: creating default .gitignore in branch ${DEPLOY_BRANCH}."
                                                 sh "echo 'target/' > .gitignore"
                                                 sh "git add .gitignore"
                                                 sh "git commit -m \"Added .gitignore\""
@@ -189,9 +188,10 @@ git ls-files | grep -v "^\\." | xargs  rm -f
 """
                                             sh "cp -rf ./${STAGING_DIR}* ."
                                             // Commit the changes to the target branch BRANCH_NAME, groovy allows to omit env. prefix, available in multibranch pipeline.
-                                            env.COMMIT_MESSAGE = "$FULCRUM_COMPONENT: Updated site in ${DEPLOY_BRANCH} from ${env.CURRENT_BRANCH} (${env.LAST_SHA}) from ${params.MULTI_MODULE} from ${BUILD_URL}"
+                                            env.COMMIT_MESSAGE = "${params.FULCRUM_COMPONENT}: Updated site in ${DEPLOY_BRANCH} from ${env.CURRENT_BRANCH} (${env.LAST_SHA}) from ${params.MULTI_MODULE} from ${BUILD_URL}"
                                             sh "git add -A"
                                             sh "git commit -m "${env.COMMIT_MESSAGE}" | true"
+                                            echo "${env.COMMIT_MESSAGE}"
                                             // Push the generated content for deployment
                                             sh "git push -u origin ${DEPLOY_BRANCH}"
                                         }
