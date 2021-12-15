@@ -28,7 +28,9 @@
 // git-websites:
 // "Nodes that are reserved for ANY project that wants to build their website docs and
 // publish directly live (requires asf-site and pypubsub"
-// no git-websites label her using ubuntu
+// https://cwiki.apache.org/confluence/display/INFRA/Multibranch+Pipeline+recipes:
+// only Jenkins nodes tagged with "git-websites" are able to push to an ASF Git repositories "asf-site" branch 
+//
 
 // Jenkins build server used: https://builds.apache.org/ / ci-builds.apache.org
 
@@ -51,7 +53,6 @@ pipeline
             }
         parameters
             {
-                //string(name: 'MULTI_MODULE', defaultValue: 'staging', description: '')
                 choice(name: 'MULTI_MODULE', choices: ['staging', 'site'], description: 'Run as multi or single module ')
                 // no default
                 choice(name: 'FULCRUM_COMPONENT', choices: ['','cache', 'crypto', 'factory', 'intake', 'json', 'localization', 'parser', 'pool', 'quartz', 'security', 'site', 'testcontainer', 'upload', 'yaafi', 'yaafi-crypto'], description: 'Select fulcrum component')
@@ -121,7 +122,7 @@ pipeline
                                 }
                         }
                 }
-            stage('Build2')
+            stage('BuildWithStage')
                 {
                     when
                         {
@@ -140,7 +141,7 @@ pipeline
                                 }
                         }
                 }
-            stage('Deploy')
+            stage('Deploy Site')
                 {
                     when
                         {
@@ -160,8 +161,15 @@ pipeline
                             }
                         }
                     }
+                    // Only the nodes labeled 'git-websites' have the credentials to commit to the.
+                    agent {
+                        node {
+                            label 'git-websites'
+                        }
+                    }
                     steps
                         {
+                            echo 'Deploying ${params.FULCRUM_COMPONENT} Site'
                             dir("${params.FULCRUM_COMPONENT}")
                                 {
                                     script
