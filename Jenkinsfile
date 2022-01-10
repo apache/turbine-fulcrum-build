@@ -1,58 +1,16 @@
-#!groovy
-
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-// https://ci-builds.apache.org/pipeline-syntax/globals
-// https://www.jenkins.io/doc/pipeline/steps/workflow-basic-steps/
-// https://www.jenkins.io/doc/pipeline/examples/#maven-and-jdk-specific-version
-// https://cwiki.apache.org/confluence/display/INFRA/Jenkins+node+labels
-// https://cwiki.apache.org/confluence/display/INFRA/ASF+Cloudbees+Operations+Center
- 
-// started with jena-site and gora
-
-// git-websites:
-// "Nodes that are reserved for ANY project that wants to build their website docs and
-// publish directly live (requires asf-site and pypubsub"
-// https://cwiki.apache.org/confluence/display/INFRA/Multibranch+Pipeline+recipes:
-// only Jenkins nodes tagged with "git-websites" are able to push to an ASF Git repositories "asf-site" branch 
-//
-
-// Jenkins build server used: https://builds.apache.org/ / ci-builds.apache.org
-
-// Fulcurm-Build has submodules, which are expcetd for this Jenkinsfile NOT to be fetched if cloning!
-// This is the default (do NOT provide git clone --recurse-submodules flag) and this is because
-// only the current submodule is initialized downstrema with git submodule update --init
-
 def AGENT_LABEL = env.AGENT_LABEL ?: 'ubuntu'
-
 def JDK_NAME = env.JDK_NAME ?: 'jdk_1.8_latest'
 def MVN_NAME = env.MVN_NAME ?: 'maven_3_latest'
 
 pipeline
     {
         agent
-            {
-                node {
-                    label AGENT_LABEL 
-                }
+             {
+                label AGENT_LABEL
             }
         parameters
             {
+                //string(name: 'MULTI_MODULE', defaultValue: 'staging', description: '')
                 choice(name: 'MULTI_MODULE', choices: ['staging', 'site'], description: 'Run as multi or single module ')
                 // no default
                 choice(name: 'FULCRUM_COMPONENT', choices: ['','cache', 'crypto', 'factory', 'intake', 'json', 'localization', 'parser', 'pool', 'quartz', 'security', 'site', 'testcontainer', 'upload', 'yaafi', 'yaafi-crypto'], description: 'Select fulcrum component')
@@ -68,7 +26,7 @@ pipeline
         environment
             {
                 DEPLOY_BRANCH = 'asf-site'
-                STAGING_DIR = "target/${params.MULTI_MODULE}/"
+                STAGING_DIR = "target/${params.MULTI_MODULE}"
                 // LANG = 'C.UTF-8'
                 // -B, --batch-mode Run in non-interactive (batch) mode
                 // -e, --error Produce execution error messages
@@ -86,6 +44,7 @@ pipeline
                 {
                     steps
                         {
+                            git 'https://gitbox.apache.org/repos/asf/turbine-fulcrum-build.git'
                             // not --update as clone ise done without --recurse-submodules
                             sh "git submodule update --init ${params.FULCRUM_COMPONENT}"
                             // branch will be detached head, need to checkout explicitely
@@ -119,6 +78,7 @@ pipeline
                                     sh "pwd"
                                     // builds into target/site folder, this folder is expected to be preserved as it is used in next step
                                     sh "mvn $MAVEN_CLI_OPTS $MAVEN_GOALS"
+                                    stash includes: "${STAGING_DIR}/**/*", name: "${params.FULCRUM_COMPONENT}-site"
                                 }
                         }
                 }
@@ -138,6 +98,7 @@ pipeline
                                     sh "pwd"
                                     // builds into target/staging folder, this folder is expected to be preserved as it is used in next step
                                     sh "mvn $MAVEN_CLI_OPTS $MAVEN_GOALS"
+                                    stash includes: "${STAGING_DIR}/**/*", name: "${params.FULCRUM_COMPONENT}-site"
                                 }
                         }
                 }
@@ -145,13 +106,6 @@ pipeline
                 {
                     when
                         {
-                        allOf {
-                            not {
-                                expression 
-                                    { 
-                                        params.TEST_MODE 
-                                    }
-                            }
                            anyOf
                             {
                                 expression
@@ -159,9 +113,7 @@ pipeline
                                         env.CURRENT_BRANCH ==~ /(?i)^(master|trunk|main).*?/
                                     }
                             }
-                        }
                     }
-                    // Only the nodes labeled 'git-websites' have the credentials to commit to the.
                     agent {
                         node {
                             label 'git-websites'
@@ -169,16 +121,18 @@ pipeline
                     }
                     steps
                         {
-                            echo 'Deploying ${params.FULCRUM_COMPONENT} Site'
+                            sh "git submodule update --init ${params.FULCRUM_COMPONENT}"
                             dir("${params.FULCRUM_COMPONENT}")
                                 {
                                     script
                                         {
                                             sh "pwd"
+                                            echo "Deploying ${params.FULCRUM_COMPONENT} Site"
+                                            unstash "${params.FULCRUM_COMPONENT}-site"
                                             // Checkout branch with current site content, target folder should be ignored!
                                             sh "git checkout ${DEPLOY_BRANCH}"
                                             // fetch only shallow
-                                            sh "git pull --depth=2 origin ${DEPLOY_BRANCH}"
+                                            // sh "git pull --depth=2 origin ${DEPLOY_BRANCH}"
 
                                             def exists = fileExists '.gitignore'
                                             if (exists)
@@ -194,14 +148,21 @@ pipeline
                                             sh """
 git ls-files | grep -v "^\\." | xargs  rm -f
 """
-                                            sh "cp -rf ./${STAGING_DIR}* ."
+                                            sh "cp -rf ./${STAGING_DIR}/* ."
                                             // Commit the changes to the target branch BRANCH_NAME, groovy allows to omit env. prefix, available in multibranch pipeline.
                                             env.COMMIT_MESSAGE = "${params.FULCRUM_COMPONENT}: Updated site in ${DEPLOY_BRANCH} from ${env.CURRENT_BRANCH} (${env.LAST_SHA}) from ${params.MULTI_MODULE} from ${BUILD_URL}"
-                                            sh "git add -A"
-                                            sh "git commit -m "${env.COMMIT_MESSAGE}" | true"
-                                            echo "${env.COMMIT_MESSAGE}"
-                                            // Push the generated content for deployment
-                                            sh "git push -u origin ${DEPLOY_BRANCH}"
+                                            echo "${env.COMMIT_MESSAGE} ....break...."
+                                            
+                                            if ( params.TEST_MODE == false) {
+                                                echo 'committing as test mode false'
+                                                //sh "git add -A"
+                                                //sh "git commit -m "${env.COMMIT_MESSAGE}" | true"
+                                                // Push the generated content for deployment
+                                                //sh "git push -u origin ${DEPLOY_BRANCH}"
+                                            } else {
+                                                echo 'Skipping as test mode'
+                                            }
+                                            
                                         }
                                 }
                         }
