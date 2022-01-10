@@ -94,6 +94,10 @@ Edit in pom and add module
 
 Test it, by running mvn install 
 
+**Caution!**
+Before adding a submodule (after a change) to the container project (that is this project), be sure, that you have pushed your commits to the remote repo. 
+If you forget this, another person may not be able to update the sub module in the container project.
+
 ### Contributing
 
 Please feel free to contribute. We are always happy to encourage new committers to the project. 
