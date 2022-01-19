@@ -1,3 +1,5 @@
+#!groovy
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -14,7 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#!groovy
+
+ // git-websites:
+// "Nodes that are reserved for ANY project that wants to build their website docs and
+// publish directly live (requires asf-site and pypubsub"
+// https://cwiki.apache.org/confluence/display/INFRA/Multibranch+Pipeline+recipes:
+// only Jenkins nodes tagged with "git-websites" are able to push to an ASF Git repositories "asf-site" branch 
+// no git-websites label her using ubuntu
+
+// Jenkins build server used: https://builds.apache.org/ / ci-builds.apache.org
+
+// Fulcrum-turbine-build has submodules, which are NOT Used for this Jenkinsfile.
+// The default is NOT to provide git clone --recurse-submodules flag).
 
 def AGENT_LABEL = env.AGENT_LABEL ?: 'ubuntu'
 def JDK_NAME = env.JDK_NAME ?: 'jdk_1.8_latest'
