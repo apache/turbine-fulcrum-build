@@ -1,8 +1,15 @@
 # [Apache F U L C R U M](https://turbine.apache.org/fulcrum/)
 
+ ## D E S C R I P T I O N
+
 Fulcrum is a collection of components originally part of the Turbine core
 project that are suitable for use in any environment.  They are designed to
 be used within any Avalon-compatible container.
+
+*Notice*
+
+This is the new Git module repository (replacing the old read-only https://github.com/apache/turbine-fulcrum-build.git) 
+pointing to the indivdual Fulcrum component repositories. 
 
 ## U S A G E 
 
