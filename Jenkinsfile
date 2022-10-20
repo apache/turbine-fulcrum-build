@@ -30,7 +30,7 @@
 // The default is NOT to provide git clone --recurse-submodules flag).
 
 def AGENT_LABEL = env.AGENT_LABEL ?: 'ubuntu'
-def JDK_NAME = env.JDK_NAME ?: 'jdk_1.8_latest'
+def JDK_NAME = env.JDK_NAME ?: 'jdk_11_latest'
 def MVN_NAME = env.MVN_NAME ?: 'maven_3_latest'
 
 pipeline
