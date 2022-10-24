@@ -79,12 +79,12 @@ pipeline
                 {
                     dir("${params.FULCRUM_COMPONENT}")
                     {
-                        git "https://gitbox.apache.org/repos/asf/turbine-fulcrum-${params.FULCRUM_COMPONENT}.git"
+                        git branch: "${params.SUB_MODULE_HEAD}", url: "https://gitbox.apache.org/repos/asf/turbine-fulcrum-${params.FULCRUM_COMPONENT}.git"
                         script
                         {
                             sh "pwd"
                             sh "git branch"
-                            echo "${params.FULCRUM_COMPONENT}: Checking out ${params.SUB_MODULE_HEAD}"
+                            echo "${params.FULCRUM_COMPONENT}: Checked out ${params.SUB_MODULE_HEAD}"
                             env.CURRENT_BRANCH = sh(script: "git status --branch --porcelain | grep '##' | cut -c 4-", returnStdout: true).trim()
                             echo "CURRENT_BRANCH: ${env.CURRENT_BRANCH}"
                             // Capture last commit hash for final commit message
@@ -155,7 +155,7 @@ pipeline
                         sh "pwd"
                         echo "Deploying ${params.FULCRUM_COMPONENT} Site"
                         sh "ls"
-                        git "https://gitbox.apache.org/repos/asf/turbine-fulcrum-${params.FULCRUM_COMPONENT}.git"
+                        git branch: "${params.SUB_MODULE_HEAD}", url: "https://gitbox.apache.org/repos/asf/turbine-fulcrum-${params.FULCRUM_COMPONENT}.git"
                         dir("${STAGING_DIR}") {
                             deleteDir()
                         }
