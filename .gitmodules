@@ -1,60 +1,60 @@
 [submodule "cache"]
 	path = cache
-	url = https://github.com/apache/turbine-fulcrum-cache.git
+	url = ../turbine-fulcrum-cache.git
 	branch = master
 [submodule "factory"]
 	path = factory
-	url = https://github.com/apache/turbine-fulcrum-factory.git
+	url = ../turbine-fulcrum-factory.git
 	branch = master
 [submodule "json"]
 	path = json
-	url = https://github.com/apache/turbine-fulcrum-json.git
+	url = ../turbine-fulcrum-json.git
 	branch = master
 [submodule "localization"]
 	path = localization
-	url = https://github.com/apache/turbine-fulcrum-localization.git
+	url = ../turbine-fulcrum-localization.git
 	branch = master
 [submodule "parser"]
 	path = parser
-	url = https://github.com/apache/turbine-fulcrum-parser.git
+	url = ../turbine-fulcrum-parser.git
 	branch = master
 [submodule "pool"]
 	path = pool
-	url = https://github.com/apache/turbine-fulcrum-pool.git
+	url = ../turbine-fulcrum-pool.git
 	branch = master
 [submodule "quartz"]
 	path = quartz
-	url = https://github.com/apache/turbine-fulcrum-quartz.git
+	url = ../turbine-fulcrum-quartz.git
 	branch = master
 [submodule "security"]
 	path = security
-	url = https://github.com/apache/turbine-fulcrum-security.git
+	url = ../turbine-fulcrum-security.git
 	branch = master
 [submodule "site"]
 	path = site
-	url = https://github.com/apache/turbine-fulcrum-site.git
+	url = ../turbine-fulcrum-site.git
 	branch = master
 [submodule "testcontainer"]
 	path = testcontainer
-	url = https://github.com/apache/turbine-fulcrum-testcontainer.git
+	url = ../turbine-fulcrum-testcontainer.git
 	branch = master
 [submodule "yaafi"]
 	path = yaafi
-	url = https://github.com/apache/turbine-fulcrum-yaafi.git
+	url = ../turbine-fulcrum-yaafi.git
 	branch = master
 [submodule "yaafi-crypto"]
 	path = yaafi-crypto
-	url = https://github.com/apache/turbine-fulcrum-yaafi-crypto.git
+	url = ../turbine-fulcrum-yaafi-crypto.git
 	branch = master
 [submodule "crypto"]
 	path = crypto
-	url = https://github.com/apache/turbine-fulcrum-crypto.git
+	url = ../turbine-fulcrum-crypto.git
 	branch = master
 [submodule "intake"]
 	path = intake
-	url = https://github.com/apache/turbine-fulcrum-intake.git
+	url = ../turbine-fulcrum-intake.git
 	branch = master
 [submodule "upload"]
 	path = upload
-	url = https://github.com/apache/turbine-fulcrum-upload.git
+	url = ../turbine-fulcrum-upload.git
    	branch = master

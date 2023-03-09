@@ -33,15 +33,22 @@ https://maven.apache.org/guides/getting-started/
 
 You could use git to checkout current trunk:
 
-     git clone --recurse-submodules https://github.com/apache/turbine-fulcrum-build.git 
+     git clone https://gitbox.apache.org/repos/asf/turbine-fulcrum-build.git 
+     
+N.B. The submodules are included with a relative URL. That is you decide if fetching with https + Github (no push) or with SSH or fetching 
+from gitbox (recommended).
      
 If you did a normal clone you have to init the submodules from the root folder with
 
-    git submodule update --init --recursive
+    git submodule update --init --remote
     
 This will register and clone all submodules in one step.
      
 Hint: To limit history e.g. to 10 commits add --depth 10.
+
+Update all Fulcrum submodules to master (assuming default branch is "master")
+
+   git submodule foreach "git checkout master || :"
      
 To update all submodules: 
 
