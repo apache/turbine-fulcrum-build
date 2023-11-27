@@ -90,6 +90,12 @@ and add the changed submodules (untracked contents, new commits" :
 
 Each component has its section [here](https://turbine.apache.org/fulcrum/).
 
+Check all components e.g. by  running
+
+    git submodule foreach "git checkout master"
+
+    git submodule foreach "mvn clean install || :"
+
 ## Requirements
 
 Fulcrum Components requires Java 8. Older components might require Java 7 only.
@@ -147,9 +153,9 @@ You may need to add additional profiles, e.g. -Papache-release,java8 or add -Dgp
  
     mvn release:prepare -DdryRun=true -DautoVersionSubmodules=true -Papache-release
     
-Security check is active by default (-Ddependency.check.skip=false ):
+If security check is deactived by default (since parent pom v12):
 
-    mvn org.owasp:dependency-check-maven:aggregate -DskipTests=true.
+    mvn org.owasp:dependency-check-maven:aggregate -DskipTests=true -Ddependency.check.skip=false
 
 **Single**
 
