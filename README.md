@@ -159,16 +159,20 @@ If security check is deactived by default (since parent pom v12):
 
 **Single**
 
-If dependency check is skipped by default, do mvn org.owasp:dependency-check-maven:check -Ddependency.check.skip=false
-Since Turbine Parent 8 security check is enabled by default.
+If dependency check is skipped by default, do 
+
+    mvn org.owasp:dependency-check-maven:check -Ddependency.check.skip=false
+
+
+Since Turbine Parent 13 security check has to be enabled by profile owasp.
 
     mvn release:prepare -DdryRun=true -Papache-release -Dtag=<project.artifact>-<version>-candidate
-    
+
 Here the tag is already set.
 
 And finally:
 
-    mvn release:clean    
+    mvn release:clean
 
 2. Remote Testing
 
@@ -181,16 +185,15 @@ If you have not set ssh-key or gpg authentication,  the tasks may require that y
 
 **Multi Module**
 
-    mvn release:prepare -DautoVersionSubmodules=true -Papache-release -Dtag=<project.artifact>-<version>-candidate
+    mvn release:prepare -DautoVersionSubmodules=true -Papache-release
     
- 
+
 Important: Success will be on the master build, the others are skipped.
 
 **Single**
 
-    mvn release:prepare -Papache-release -Dtag=<project.artifact>-<version>-candidate
+    mvn release:prepare -Papache-release
 
-  
 3. Release Preparing
 
 If you get a 401 error on the upload to repository.apache.org, make sure

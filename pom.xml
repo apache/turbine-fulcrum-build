@@ -22,11 +22,11 @@
   <parent>
     <artifactId>turbine-parent</artifactId>
        <groupId>org.apache.turbine</groupId>
-       <version>12</version>
+       <version>14-SNAPSHOT</version>
   </parent>
   <artifactId>fulcrum</artifactId>
   <packaging>pom</packaging>
-  <version>1</version>
+  <version>2</version>
   <name>Fulcrum Master Build</name>
   <url>http://turbine.apache.org/fulcrum</url>
   <inceptionYear>2001</inceptionYear>
@@ -73,7 +73,7 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/turbine-fulcrum-build.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/turbine-fulcrum-build.git</developerConnection>    
         <url>https://github.com/apache/turbine-fulcrum-build/tree/${project.scm.tag}</url>
-        <tag>master</tag>
+        <tag>HEAD</tag>
     </scm>
   
   <build>
